@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: to-do-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: to-do-app
+  template:
+    metadata:
+      labels:
+        app: to-do-app
+    spec:
+      containers:
+        - name: to-do-app
+          image: 253490765247.dkr.ecr.us-east-1.amazonaws.com/assignment:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: port
+          volumeMounts:
+            - mountPath: /etc/todos/
+              name: app-storage
+      volumes:
+        - name: app-storage
+          persistentVolumeClaim:
+            claimName: app-pvc
